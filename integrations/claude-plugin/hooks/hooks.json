@@ -1,0 +1,28 @@
+{
+  "description": "Keeps the wisp skill from loading without the CLI, and ends the Wisp session (agent cursor, banner, scratch Chrome tabs) when a turn ends.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/hooks/require-cli.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v wisp >/dev/null 2>&1 && wisp status >/dev/null 2>&1 && wisp end >/dev/null 2>&1; exit 0",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

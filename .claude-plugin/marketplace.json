@@ -1,0 +1,17 @@
+{
+  "name": "wisp",
+  "owner": {
+    "name": "Vincent Yang",
+    "url": "https://github.com/missuo"
+  },
+  "metadata": {
+    "description": "Computer use for macOS: read app windows as an accessibility tree and drive native apps and Chrome tabs."
+  },
+  "plugins": [
+    {
+      "name": "wisp",
+      "source": "./integrations/claude-plugin",
+      "category": "automation"
+    }
+  ]
+}

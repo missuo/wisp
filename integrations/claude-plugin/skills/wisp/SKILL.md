@@ -109,7 +109,8 @@ Interruptions and reporting
 - Chrome tabs you open are scratch: `wisp end` closes them. If a tab is a deliverable or a hand-off for the user,
   mark it with `wisp chrome mark --tab T deliverable|handoff` so it survives `wisp end`, leave it open and say so
   (marks reset each turn). Keep the browser in the background unless the user wants to watch.
-- Run `wisp end --app X` (or `wisp end --tab <id>`) when finished so the cursor and banner go away.
+- Run `wisp end --app X` (or `wisp end --tab <id>`) when finished so the cursor and banner go away. In Claude
+  Code the plugin's Stop hook ends whatever is left when the turn does.
 
 ## Confirmations
 

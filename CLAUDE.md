@@ -23,7 +23,10 @@ of the ChatGPT/Codex desktop app's Computer Use (Part 1) and the design this cod
 - `Tests/WispCoreTests/` - unit tests for WispCore.
 - `scripts/` - `package.sh` (builds and assembles `Wisp.app` + `wisp`, signs), `bundle.sh` (local install to
   `~/.local/bin`), `set-version.sh` (rewrites `Sources/WispCore/Version.swift`), `e2e.sh` (TextEdit smoke test).
-- `skills/wisp/SKILL.md` - the skill that teaches an agent how to use the CLI. Keep it in sync with the commands.
+- `integrations/claude-plugin/` - the Claude Code plugin, delivered as a self-contained, directly installable
+  directory (`.claude-plugin/plugin.json`, `LICENSE`, `README.md`, `hooks/hooks.json`, `skills/wisp/`). The
+  plugin is installed as that directory alone, so it must never reference files outside itself.
+  `skills/wisp/SKILL.md` teaches an agent how to use the CLI; keep it in sync with the commands.
 - `assets/icon/` - icon sources (SVG, 1024 PNG, `Wisp.icon` Icon Composer document); `assets/sparkle-public-key.txt`.
 - `.github/workflows/release.yml` - signed, notarized release pipeline (see below).
 
@@ -51,6 +54,11 @@ under `/tmp/wisp`, logs via `wisp daemon log`.
   keyed on it and every installed user would have to re-authorize.
 - Protocol changes go in `Sources/WispCore/Protocol.swift` first, then daemon, CLI, MCP tools, `SKILL.md` and
   README together. Actions return the new state as a diff; keep that contract.
+- The repository is also a Claude Code marketplace: `.claude-plugin/marketplace.json` serves the plugin in
+  `integrations/claude-plugin`. The marketplace entry carries only `name`, `source` and `category`; every other
+  field comes from the plugin's own manifest, so metadata is never written twice. The plugin has its own SemVer
+  in `integrations/claude-plugin/.claude-plugin/plugin.json`, independent of the app version - bump it in the
+  same commit as any change inside that directory, or installed users never see the update.
 - Never commit certificates, private keys or credentials (`*.p12`, `*.key` are gitignored). Signing and
   notarization secrets live only in GitHub Actions secrets.
 - The user's own Chrome may already listen on DevTools port 9222. Never assume that port is Wisp's; `wisp chrome

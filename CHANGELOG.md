@@ -3,6 +3,19 @@
 All notable changes to Wisp are documented here. The section for each released version is shown in the Sparkle
 update dialog and in the GitHub release. This project follows [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+### Added
+- Claude Code plugin in `integrations/claude-plugin`: one install for the skill, a `Stop` hook that ends the
+  session (cursor, banner, scratch Chrome tabs) when a turn finishes or the user interrupts, and a `PreToolUse`
+  hook that refuses the skill when the `wisp` command is missing instead of loading it to find out. The repository
+  doubles as the marketplace (`.claude-plugin/marketplace.json`), so the plugin installs straight from here:
+  `/plugin marketplace add missuo/wisp` then `/plugin install wisp@wisp`.
+
+### Changed
+- The agent skill moved from `skills/wisp/` to `integrations/claude-plugin/skills/wisp/`; its only content change
+  is a line about the plugin's Stop hook.
+
 ## [0.1.1] - 2026-09-15
 
 ### Added

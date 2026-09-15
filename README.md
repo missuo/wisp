@@ -38,26 +38,39 @@ open the right Settings pane. Once every permission is granted the badge disappe
 
 ### Use with Claude Code
 
-Wisp ships a skill and an MCP server so an agent can drive the UI for you.
+Install the plugin — one step for the skill and the session-cleanup hook:
 
-- **Skill** — copy the skill into Claude Code so it knows how and when to use `wisp`:
+```text
+/plugin marketplace add missuo/wisp
+/plugin install wisp@wisp
+```
 
-  ```bash
-  git clone --depth 1 https://github.com/missuo/wisp /tmp/wisp && \
-    mkdir -p ~/.claude/skills && cp -R /tmp/wisp/skills/wisp ~/.claude/skills/wisp
-  ```
+It gives Claude Code a skill that teaches it when and how to drive the UI, and two hooks: one ends the Wisp
+session (agent cursor, banner, scratch Chrome tabs) whenever a turn finishes or you interrupt it, even if the
+agent forgot to; the other refuses the skill on a machine without the `wisp` command and hands Claude the install
+instructions instead. Note that ending without `--app`/`--tab` ends every Wisp session on the machine, not only
+the ones this agent opened.
 
-  (From a source checkout you already have: `cp -R skills/wisp ~/.claude/skills/wisp`.) The skill checks that `wisp`
-  is installed and tells you how to install it if not.
+This repository is the marketplace: `.claude-plugin/marketplace.json` serves the plugin directly from
+[integrations/claude-plugin](integrations/claude-plugin), so there is no third-party index in between and the
+plugin ships with the version that produced it. The skill checks that the CLI is installed and tells you how to
+install it if not.
 
-- **MCP server** — expose the same operations as tools:
+<details>
+<summary>Wiring it by hand, or from another agent</summary>
+
+- **MCP server** (Codex, scripts, any MCP client):
 
   ```bash
   claude mcp add wisp -- wisp mcp
   ```
 
-- **Stop hook**: end the Wisp session (cursor, banner, scratch Chrome tabs) whenever Claude Code finishes a turn
-  or the user interrupts it, even if the agent forgot to run `wisp end`. Add to `~/.claude/settings.json`:
+  Over MCP the `wisp_turn_end` tool replaces the Stop hook: call it when the task is finished or the user
+  interrupts.
+
+- **Skill** — from a source checkout: `cp -R integrations/claude-plugin/skills/wisp ~/.claude/skills/wisp`.
+
+- **Stop hook** — in `~/.claude/settings.json`:
 
   ```json
   {
@@ -70,9 +83,9 @@ Wisp ships a skill and an MCP server so an agent can drive the UI for you.
   ```
 
   The `wisp status` guard keeps the hook from starting the daemon on turns that never used Wisp (a bare `wisp end`
-  would). Note that `wisp end` without `--app`/`--tab` ends every Wisp session on the machine, not only the ones
-  this agent opened. Over MCP the equivalent is the `wisp_turn_end` tool: call it when the task is finished or the
-  user interrupts.
+  would).
+
+</details>
 
 ### From source
 
@@ -143,7 +156,7 @@ Claude Code with `claude mcp add wisp -- wisp mcp`. The tools mirror the command
 | Chrome over DevTools | `wisp_chrome` (status, launch, tabs, new, goto, eval, close, back, forward, reload, upload, dialog, mark, show, hide) |
 | Configuration and health | `wisp_instructions`, `wisp_policy`, `wisp_approvals`, `wisp_doctor`, `wisp_log` |
 
-The model-facing guide lives in [skills/wisp/SKILL.md](skills/wisp/SKILL.md).
+The model-facing guide lives in [integrations/claude-plugin/skills/wisp/SKILL.md](integrations/claude-plugin/skills/wisp/SKILL.md).
 
 ## How it works
 
@@ -193,7 +206,7 @@ policy in four tiers: actions the agent must hand back to the user (submitting c
 security walls, entering passwords), actions it must confirm right before the effect (deleting, sending, paying,
 changing settings or permissions), actions covered by an explicit request (a login or upload the user named), and
 everything else, which needs no confirmation. See
-[skills/wisp/references/confirmations.md](skills/wisp/references/confirmations.md).
+[the confirmation tiers](integrations/claude-plugin/skills/wisp/references/confirmations.md).
 
 ## Releases and updates
 
@@ -217,7 +230,8 @@ everything else, which needs no confirmation. See
 Sources/WispCore   protocol, JSON, framing, UI tree model, transforms, renderer, diff, key parser, policy
 Sources/wispd      daemon: AX snapshot, input synthesis, cursor overlay, settle, screenshots, CDP, socket server
 Sources/wisp       CLI + MCP server
-skills/wisp        SKILL.md for agents
+.claude-plugin/    marketplace.json - serves the plugin below straight from this repository
+integrations/      claude-plugin: the Claude Code plugin (skill for agents + session-cleanup Stop hook)
 scripts/           package.sh (build+sign), bundle.sh (local install), set-version.sh, e2e.sh (TextEdit smoke test)
 .github/workflows  release.yml (sign, notarize, Sparkle appcast, GitHub release)
 assets/            app icon sources and the Sparkle public key

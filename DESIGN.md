@@ -819,7 +819,7 @@ following additions. Each mirrors a Codex mechanism; none copies Codex text or a
   id (locale-proof), generated into `BuiltinInstructions.swift` by `scripts/gen-instructions.sh`, linted by
   `scripts/lint-instructions.sh`, overridable from `~/.config/wisp/instructions/<stem>.md`, with
   `instructionsMode` merge|replace|off, `--instructions`/`--no-instructions`, and `wisp instructions list|show`.
-- **Model guidance** (`skills/wisp/SKILL.md`, `skills/wisp/references/confirmations.md`). The Codex skill's rules
+- **Model guidance** (`integrations/claude-plugin/skills/wisp/SKILL.md`, `integrations/claude-plugin/skills/wisp/references/confirmations.md`). The Codex skill's rules
   (tool choice, re-read discipline, no-change handling, screenshot-only observation, app resolution and retry,
   newline hazard in composers, settle policy, interruption phrasing) and its four-tier confirmation policy are
   restated in Wisp terms.

@@ -1,0 +1,20 @@
+{
+  "name": "wisp",
+  "version": "0.1.0",
+  "description": "Computer use for macOS: read an app window as an indexed accessibility tree and drive native apps and Chrome tabs with the `wisp` CLI.",
+  "author": {
+    "name": "Vincent Yang",
+    "url": "https://github.com/missuo"
+  },
+  "homepage": "https://github.com/missuo/wisp",
+  "repository": "https://github.com/missuo/wisp",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "keywords": [
+    "macos",
+    "computer-use",
+    "accessibility",
+    "ui-automation",
+    "chrome",
+    "devtools-protocol"
+  ]
+}
